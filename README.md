@@ -1,6 +1,6 @@
 # About
 
-TBD
+A simple python blockchain, created for the sake of it
 
 # How to
 
