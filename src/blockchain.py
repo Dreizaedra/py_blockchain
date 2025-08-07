@@ -1,12 +1,13 @@
-import hashlib
-import json
-
+from hashlib import sha256
+from json import dumps
 from time import time
+from urllib.parse import urlparse
 
 class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.current_transactions = []
+        self.nodes = set()
 
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
@@ -29,9 +30,19 @@ class Blockchain(object):
 
         # Reset the current list of transactions
         self.current_transactions = []
-
         self.chain.append(block)
+
         return block
+
+    def register_node(self, address):
+        """
+        Add a new node to the list of nodes
+        :param address: <str> Address of node. Eg. 'http://192.168.0.5:5000'
+        :return: None
+        """
+
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
 
     def new_transaction(self, sender, recipient, amount):
         """
@@ -73,8 +84,8 @@ class Blockchain(object):
         :return: <str>
         """
 
-        block_string = json.dumps(block, sort_keys=True).encode()
-        return hashlib.sha256(block_string).hexdigest()
+        block_string = dumps(block, sort_keys=True).encode()
+        return sha256(block_string).hexdigest()
 
     @staticmethod
     def valid_proof(last_proof, proof):
@@ -86,7 +97,7 @@ class Blockchain(object):
         """
 
         guess = f"{last_proof}{proof}".encode()
-        guess_hash = hashlib.sha256(guess).hexdigest()
+        guess_hash = sha256(guess).hexdigest()
 
         return guess_hash[:4] == "0000"
 
