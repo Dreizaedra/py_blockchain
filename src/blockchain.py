@@ -64,7 +64,7 @@ class Blockchain(object):
 
         return True
 
-    def resolve_conflict(self):
+    def resolve_conflicts(self):
         """
         This is our Consensus Algorithm, it resolves conflicts
         by replacing our chain with the longest one in the network.
